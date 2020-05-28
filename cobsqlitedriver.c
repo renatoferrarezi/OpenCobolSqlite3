@@ -7,40 +7,12 @@
 
 sqlite3 *database;
 
-/*
-*/
-void _trim(char *s)
-{
-    int l;
-
-    l = strlen(s) - 1;
-    for (;;)
-    {
-        if (l < 1)
-            break;
-        if (s[l] != ' ' && s[l] != '\t')
-            break;
-        s[l] = 0;
-        l--;
-    }
-    if (l == 0)
-        return;
-    for (;;)
-    {
-        if (s[0] == 0)
-            break;
-        if (s[0] != ' ' && s[0] != '\t')
-            break;
-        memmove(s, s + 1, strlen(s));
-    }
-}
 void sqliteConnect(sqlite3 **db, char *filename, ...)
 {
-    char *filen = cob_get_picx_param(2, NULL, 0);
-    _trim(filen);
-    const char *file = filen;
 
-    long long errcod = 0;
+    const char *file = cob_get_picx_param(2, NULL, 0);
+
+    int errcod = 0;
 
     int rc = sqlite3_open(file, &database);
     *db = database;
@@ -58,7 +30,6 @@ void sqliteConnect(sqlite3 **db, char *filename, ...)
         const char *errmsg = "Success";
         cob_put_picx_param(4, (void *)errmsg);
     }
-    cob_free((void *)filen);
 }
 
 void sqliteOpenCursor(sqlite3 **db, char *query, sqlite3_stmt **stmt)
